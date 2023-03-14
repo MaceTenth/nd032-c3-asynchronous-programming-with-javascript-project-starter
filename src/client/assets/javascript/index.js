@@ -39,11 +39,15 @@ function setupClickHandlers() {
 		// Race track form field
 		if (target.matches('.card.track')) {
 			handleSelectTrack(target)
+		} else if(target.parentElement.matches('.card.track')){
+			handleSelectTrack(target.parentElement)
 		}
 
 		// Podracer form field
 		if (target.matches('.card.podracer')) {
 			handleSelectPodRacer(target)
+		} else if (target.parentElement.matches('.card.podracer')){
+			handleSelectPodRacer(target.parentElement)
 		}
 
 		// Submit create race form
@@ -375,7 +379,7 @@ async function getRace(id) {
 	return response;
 }
 
-function startRace(id) {
+async function startRace(id) {
 	return fetch(`${SERVER}/api/races/${id}/start`, {
 		method: 'POST',
 		...defaultFetchOpts(),
@@ -384,8 +388,14 @@ function startRace(id) {
 	.catch(err => console.log("Problem with getRace request::", err))
 }
 
-function accelerate(id) {
+async function accelerate(id) {
 	// POST request to `${SERVER}/api/races/${id}/accelerate`
 	// options parameter provided as defaultFetchOpts
 	// no body or datatype needed for this request
+	return fetch(`${SERVER}/api/races/${id}/accelerate`, {
+		method: 'POST',
+		...defaultFetchOpts(),
+	})
+	.then(res => res.json())
+	.catch(err => console.log("Problem with accelerate request::", err))
 }
