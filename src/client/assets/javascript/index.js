@@ -85,7 +85,7 @@ async function handleCreateRace() {
   const { player_id, track_id } = store;
   // const race = TODO - invoke the API call to create the race, then save the result
   const raceId = await createRace(player_id, track_id);
-  console.log("raceId: ", raceId);
+  
   // TODO - update the store with the race id
   renderAt("#race", renderRaceStartView(raceId.Track));
 
@@ -306,6 +306,7 @@ function resultsView(positions) {
 		</header>
 		<main>
 			${raceProgress(positions)}
+			${finishingMessage(store.final_position)}
 			<a href="/race" class="button">Start a new race</a>
 		</main>
 	`;
@@ -337,6 +338,20 @@ function raceProgress(positions) {
 			</section>
 		</main>
 	`;
+}
+
+function finishingMessage(status){
+	const suffix = {
+		1: 'st',
+		2: 'nd',
+		3: 'rd',
+		4: 'th',
+		5: 'th'
+	}
+
+	const finalSuffix = suffix[status];
+     
+	return `<h4>Congradulations! You finished ${status}${finalSuffix}!</h4>`
 }
 
 function renderAt(element, html) {
