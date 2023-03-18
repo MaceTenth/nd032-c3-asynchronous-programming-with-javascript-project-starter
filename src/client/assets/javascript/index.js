@@ -90,7 +90,8 @@ async function handleCreateRace() {
   renderAt("#race", renderRaceStartView(raceId.Track));
 
   // For the API to work properly, the race id should be race id - 1
-  Object.assign(store, { race_id: raceId.ID });
+  updateStore({ race_id: raceId.ID })
+//   Object.assign(store, { race_id: raceId.ID });
   // The race has been created, now start the countdown
   // TODO - call the async function runCountdown
   await runCountdown();
@@ -117,8 +118,8 @@ function runRace(raceID) {
           // return raceInfo;
         } else {
 		  const racerResults = raceInfo.positions.find(racer => racer.id === store.player_id)
-		  Object.assign(store,{race_status: raceInfo.status, final_position:racerResults.final_position})
-		  
+		//   Object.assign(store,{race_status: raceInfo.status, final_position:racerResults.final_position})
+		  updateStore({race_status: raceInfo.status, final_position:racerResults.final_position})
           clearInterval(raceInterval); // to stop the interval from repeating
           renderAt("#race", resultsView(raceInfo.positions)); // to render the results view
           resolve(raceInfo); // resolve the promise
@@ -186,7 +187,8 @@ function handleSelectPodRacer(target) {
   target.classList.add("selected");
 
   // TODO - save the selected racer to the store
-  Object.assign(store, { player_id: Number(target.id) });
+//   Object.assign(store, { player_id: Number(target.id) });
+  updateStore({ player_id: Number(target.id) })
 }
 
 function handleSelectTrack(target) {
@@ -202,7 +204,8 @@ function handleSelectTrack(target) {
   target.classList.add("selected");
 
   // TODO - save the selected track id to the store
-  Object.assign(store, { track_id: target.id });
+//   Object.assign(store, { track_id: target.id });
+  updateStore({ track_id: target.id })
 }
 
 function handleAccelerate() {
@@ -439,7 +442,7 @@ async function startRace(id) {
         "Content-Type": "application/json",
       },
     };
-    console.log("racing:", racing);
+   
     return fetch(`${SERVER}/api/races/${racing}/start`, fetchOptions).catch(
       (err) => console.log("Problem with the request:", err)
     );
@@ -474,3 +477,7 @@ async function accelerate(id) {
     console.log(`startRace: ${error}`);
   }
 }
+
+function updateStore(updates) {
+	Object.assign(store, updates);
+  }
