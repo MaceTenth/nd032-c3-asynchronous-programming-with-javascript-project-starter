@@ -36,19 +36,34 @@ function setupClickHandlers() {
     function (event) {
       const { target } = event;
 
-      // Race track form field
-      if (target.matches(".card.track")) {
-        handleSelectTrack(target);
-      } else if (target.parentElement.matches(".card.track")) {
-        handleSelectTrack(target.parentElement);
-      }
+    //   // Race track form field
+    //   if (target.matches(".card.track")) {
+    //     handleSelectTrack(target);
+    //   } else if (target.parentElement.matches(".card.track")) {
+    //     handleSelectTrack(target.parentElement);
+    //   }
 
-      // Podracer form field
-      if (target.matches(".card.podracer")) {
-        handleSelectPodRacer(target);
-      } else if (target.parentElement.matches(".card.podracer")) {
-        handleSelectPodRacer(target.parentElement);
-      }
+    //   // Podracer form field
+    //   if (target.matches(".card.podracer")) {
+    //     handleSelectPodRacer(target);
+    //   } else if (target.parentElement.matches(".card.podracer")) {
+    //     handleSelectPodRacer(target.parentElement);
+    //   }
+
+	function matchesOrParentMatches(target, selector) {
+		return target.matches(selector) || (target.parentElement && target.parentElement.matches(selector));
+	  }
+	  
+	  if (matchesOrParentMatches(target, ".card.track")) {
+		const selectedTrack = target.matches(".card.track") ? target : target.parentElement;
+		handleSelectTrack(selectedTrack);
+	  }
+	  
+	  if (matchesOrParentMatches(target, ".card.podracer")) {
+		const selectedPodRacer = target.matches(".card.podracer") ? target : target.parentElement;
+		handleSelectPodRacer(selectedPodRacer);
+	  }
+	  
 
       // Submit create race form
       if (target.matches("#submit-create-race")) {
