@@ -98,6 +98,13 @@ async function handleCreateRace() {
 
   // TODO - Get player_id and track_id from the store
   const { player_id, track_id } = store;
+
+  if (!player_id || !track_id) {
+    displayErrorMessage("Please select a player and track.");
+    return;
+  }
+
+
   // const race = TODO - invoke the API call to create the race, then save the result
   const raceId = await createRace(player_id, track_id);
   
@@ -495,4 +502,14 @@ async function accelerate(id) {
 
 function updateStore(updates) {
 	Object.assign(store, updates);
+  }
+
+function displayErrorMessage(message) {
+	const errorMessageContainer = document.getElementById("error-message");
+	errorMessageContainer.innerText = message;
+	errorMessageContainer.classList.remove("hidden");
+  
+	setTimeout(() => {
+	  errorMessageContainer.classList.add("hidden");
+	}, 3000);
   }
