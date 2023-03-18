@@ -160,7 +160,7 @@ async function runCountdown() {
         console.log(timer);
         document.getElementById("big-numbers").innerHTML = --timer;
         if (timer === 0) {
-          console.log("Done Counting!!");
+			document.getElementById("big-numbers").innerHTML = "GO!"
           clearInterval(countDownInterval);
           resolve();
         }
@@ -306,7 +306,7 @@ function resultsView(positions) {
 		</header>
 		<main>
 			${raceProgress(positions)}
-			<a href="/race">Start a new race</a>
+			<a href="/race" class="button">Start a new race</a>
 		</main>
 	`;
 }
@@ -462,7 +462,7 @@ async function accelerate(id) {
       },
     };
 
-	
+
     if(store.race_status !== "finished"){
 		return fetch(
 			`${SERVER}/api/races/${accelerateRaceId}/accelerate`,
