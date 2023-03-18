@@ -103,18 +103,24 @@ function runRace(raceID) {
 	return new Promise(resolve => {
 	// TODO - use Javascript's built in setInterval method to get race info every 500ms
 	console.log("raceID: " ,raceID)
-	const getRaceId = setInterval(async function(){
+	const raceInterval = setInterval(async function(){
 		
 		try{
 			const fetchRaceInfo = await fetch(`${SERVER}/api/races/${raceID -1}`);
 			const raceInfo = await fetchRaceInfo.json();
+			 
+			if(raceInfo.status.includes("in-progress")){
 			
-			
-				console.log("race Info: ",raceInfo.positions)
-				clearInterval(getRaceId);
+				console.log("race Info: ",raceInfo)
+				// clearInterval(getRaceId);
 				renderAt('#leaderBoard', raceProgress(raceInfo.positions))
-				resolve("Got Race Info!")
-				return raceInfo;
+				resolve(raceInfo)
+				// return raceInfo;
+			} else{
+				clearInterval(raceInterval) // to stop the interval from repeating
+				renderAt('#race', resultsView(raceInfo.positions)) // to render the results view
+				resolve(res) // resolve the promise
+			}
 			}
 
 			
@@ -183,7 +189,7 @@ function handleSelectPodRacer(target) {
 	target.classList.add('selected')
 
 	// TODO - save the selected racer to the store
-	Object.assign(store,{player_id:+target.id})
+	Object.assign(store,{player_id:Number(target.id)})
 }
 
 function handleSelectTrack(target) {
