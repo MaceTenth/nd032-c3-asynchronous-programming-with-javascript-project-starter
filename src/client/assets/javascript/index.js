@@ -103,14 +103,14 @@ async function handleCreateRace() {
 function runRace(raceID) {
   return new Promise((resolve) => {
     // TODO - use Javascript's built in setInterval method to get race info every 500ms
-    console.log("raceID: ", raceID);
+    
     const raceInterval = setInterval(async function () {
       try {
         const fetchRaceInfo = await getRace(raceID - 1);
         const raceInfo = await fetchRaceInfo.json();
 
         if (raceInfo.status.includes("in-progress")) {
-          console.log("race Info: ", raceInfo);
+         
           // clearInterval(getRaceId);
           renderAt("#leaderBoard", raceProgress(raceInfo.positions));
           resolve(raceInfo);
@@ -118,7 +118,7 @@ function runRace(raceID) {
         } else {
 		  const racerResults = raceInfo.positions.find(racer => racer.id === store.player_id)
 		  Object.assign(store,{race_status: raceInfo.status, final_position:racerResults.final_position})
-		  console.log("Store: ", store);
+		  
           clearInterval(raceInterval); // to stop the interval from repeating
           renderAt("#race", resultsView(raceInfo.positions)); // to render the results view
           resolve(raceInfo); // resolve the promise
@@ -157,7 +157,7 @@ async function runCountdown() {
       // run this DOM manipulation to decrement the countdown for the user
 
       const countDownInterval = setInterval(function () {
-        console.log(timer);
+        
         document.getElementById("big-numbers").innerHTML = --timer;
         if (timer === 0) {
 			document.getElementById("big-numbers").innerHTML = "GO!"
@@ -174,7 +174,7 @@ async function runCountdown() {
 }
 
 function handleSelectPodRacer(target) {
-  console.log("selected a pod", target.id);
+  
 
   // remove class selected from all racer options
   const selected = document.querySelector("#racers .selected");
@@ -190,7 +190,7 @@ function handleSelectPodRacer(target) {
 }
 
 function handleSelectTrack(target) {
-  console.log("selected a track", target.id);
+  
 
   // remove class selected from all track options
   const selected = document.querySelector("#tracks .selected");
@@ -206,7 +206,7 @@ function handleSelectTrack(target) {
 }
 
 function handleAccelerate() {
-  console.log("accelerate button clicked");
+  
   // TODO - Invoke the API call to accelerate
   accelerate(store.race_id - 1);
 }
@@ -406,7 +406,7 @@ async function createRace(player_id, track_id) {
   player_id = parseInt(player_id);
   track_id = parseInt(track_id);
   const body = { player_id, track_id };
-  console.log("body:", body);
+  
 
   try {
     const res = await fetch(`${SERVER}/api/races`, {
@@ -447,26 +447,11 @@ async function startRace(id) {
     console.log(`startRace: ${error}`);
   }
 
-  // const startID = id - 1
-  // console.log("StardID:", startID)
-  // return fetch(`${SERVER}/api/races/${id}/start`, {
-  // 	method: 'POST',
-  // 	...defaultFetchOpts(),
-  // })
-  // .then(res => res.json())
-  // .catch(err => console.log("Problem with getRace request::", err))
+  
 }
 
 async function accelerate(id) {
-  // POST request to `${SERVER}/api/races/${id}/accelerate`
-  // options parameter provided as defaultFetchOpts
-  // no body or datatype needed for this request
-  // return fetch(`${SERVER}/api/races/${id}/accelerate`, {
-  // 	method: 'POST',
-  // 	...defaultFetchOpts(),
-  // })
-  // .then(res => res.json())
-  // .catch(err => console.log("Problem with accelerate request::", err))
+  
 
   try {
     const accelerateRaceId = id;
