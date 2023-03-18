@@ -116,7 +116,9 @@ function runRace(raceID) {
           resolve(raceInfo);
           // return raceInfo;
         } else {
-		  console.log("Else race Info: ", raceInfo);
+		  const racerResults = raceInfo.positions.find(racer => racer.id === store.player_id)
+		  Object.assign(store,{race_status: raceInfo.status, final_position:racerResults.final_position})
+		  console.log("Store: ", store);
           clearInterval(raceInterval); // to stop the interval from repeating
           renderAt("#race", resultsView(raceInfo.positions)); // to render the results view
           resolve(raceInfo); // resolve the promise
