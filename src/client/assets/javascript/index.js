@@ -1,5 +1,6 @@
 // PROVIDED CODE BELOW (LINES 1 - 80) DO NOT REMOVE
 
+
 // The store will hold all information needed globally
 let store = {
 	track_id: undefined,
@@ -211,6 +212,7 @@ function handleSelectTrack(target) {
 function handleAccelerate() {
 	console.log("accelerate button clicked")
 	// TODO - Invoke the API call to accelerate
+	accelerate(store.race_id - 1)
 }
 
 // HTML VIEWS ------------------------------------------------
@@ -238,7 +240,7 @@ function renderRacerCard(racer) {
 	return `
 		<li class="card podracer" id="${id}">
 			<h3>Driver Name: ${driver_name}</h3>
-			<p>Top Speed: ${top_speed}</p>
+			<p>Top Speed: ${top_speed} MP/h</p>
 			<p>Acceleration: ${acceleration}</p>
 			<p>Handling: ${handling}</p>
 		</li>
@@ -262,11 +264,12 @@ function renderTrackCards(tracks) {
 }
 
 function renderTrackCard(track) {
-	const { id, name } = track
+	const { id, name ,segments } = track
 
 	return `
 		<li id="${id}" class="card track">
 			<h3>${name}</h3>
+			<h4>No. of segments: ${segments.length}</h4>
 		</li>
 	`
 }
@@ -303,7 +306,7 @@ function resultsView(positions) {
 
 	return `
 		<header>
-			<h1>Race Results</h1>
+			<h1>Race Finished! Race Results</h1>
 		</header>
 		<main>
 			${raceProgress(positions)}
@@ -324,6 +327,7 @@ function raceProgress(positions) {
 			<tr>
 				<td>
 					<h3>${count++} - ${p.driver_name}</h3>
+					<h4>Speed: ${p.speed} MP/h</h4>
 				</td>
 			</tr>
 		`
@@ -448,10 +452,28 @@ async function accelerate(id) {
 	// POST request to `${SERVER}/api/races/${id}/accelerate`
 	// options parameter provided as defaultFetchOpts
 	// no body or datatype needed for this request
-	return fetch(`${SERVER}/api/races/${id}/accelerate`, {
-		method: 'POST',
-		...defaultFetchOpts(),
-	})
-	.then(res => res.json())
-	.catch(err => console.log("Problem with accelerate request::", err))
+	// return fetch(`${SERVER}/api/races/${id}/accelerate`, {
+	// 	method: 'POST',
+	// 	...defaultFetchOpts(),
+	// })
+	// .then(res => res.json())
+	// .catch(err => console.log("Problem with accelerate request::", err))
+
+
+
+	try {
+	
+		const acceleratePlayerId = id;
+		const fetchOptions = {
+		  method: 'POST',
+		  headers: {
+			'Content-Type': 'application/json',
+		  },
+		};
+		console.log("PlayerID:",acceleratePlayerId)
+		return fetch(`${SERVER}/api/races/${acceleratePlayerId}/accelerate`, fetchOptions)
+		  .catch(err => console.log("Problem with the request:", err))
+	  } catch (error) {
+		console.log(`startRace: ${error}`);
+	  }
 }
