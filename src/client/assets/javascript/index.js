@@ -106,7 +106,7 @@ function runRace(raceID) {
     console.log("raceID: ", raceID);
     const raceInterval = setInterval(async function () {
       try {
-        const fetchRaceInfo = await fetch(`${SERVER}/api/races/${raceID - 1}`);
+        const fetchRaceInfo = await getRace(raceID - 1);
         const raceInfo = await fetchRaceInfo.json();
 
         if (raceInfo.status.includes("in-progress")) {
@@ -454,18 +454,22 @@ async function accelerate(id) {
   // .catch(err => console.log("Problem with accelerate request::", err))
 
   try {
-    const acceleratePlayerId = id;
+    const accelerateRaceId = id;
     const fetchOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
     };
-    console.log("PlayerID:", acceleratePlayerId);
-    return fetch(
-      `${SERVER}/api/races/${acceleratePlayerId}/accelerate`,
-      fetchOptions
-    ).catch((err) => console.log("Problem with the request:", err));
+
+	
+    if(store.race_status !== "finished"){
+		return fetch(
+			`${SERVER}/api/races/${accelerateRaceId}/accelerate`,
+			fetchOptions
+		  ).catch((err) => console.log("Problem with the request:", err));
+	}
+    
   } catch (error) {
     console.log(`startRace: ${error}`);
   }
