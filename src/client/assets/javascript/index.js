@@ -315,7 +315,9 @@ function renderRaceStartView(track, racers) {
 			<section id="leaderBoard">
 				${renderCountdown(3)}
 			</section>
-
+			<section id="race-view">
+			 <canvas id="race-canvas" width="800" height="400"></canvas>
+		    </section>
 			<section id="accelerate">
 				<h2>Directions</h2>
 				<p>Click the button as fast as you can to make your racer go faster!</p>
@@ -358,6 +360,8 @@ function raceProgress(positions) {
 			</tr>
 		`;
   });
+
+  renderCanvas(store.track_id, positions);
 
   return `
 		<main>
@@ -528,3 +532,42 @@ function checkMissingSelection(player_id, track_id) {
 
   return missingInfo;
 }
+
+async function renderCanvas(trackId, positions) {
+	const track = (await getTracks()).find((t) => t.id === +trackId);
+  
+	const canvas = document.getElementById("race-canvas");
+	const ctx = canvas.getContext("2d");
+  
+	const trackWidth = canvas.width;
+	const trackHeight = canvas.height;
+  
+	// Clear the canvas
+	ctx.clearRect(0, 0, trackWidth, trackHeight);
+  
+	// Draw the track background
+	ctx.fillStyle = "#eee";
+	ctx.fillRect(0, 0, trackWidth, trackHeight);
+  
+	// Calculate car width and height based on canvas size
+	const carWidth = 30;
+	const carHeight = 60;
+  
+	// Draw each car
+	positions.forEach((position, index) => {
+	  const segmentPercentage = position.segment / track.segments.length;
+	  const x = segmentPercentage * trackWidth;
+	  const y = (index * (carHeight + 10)) % trackHeight;
+  
+	  // Draw car
+	  ctx.fillStyle = position.id === store.player_id ? "blue" : "red";
+	  ctx.fillRect(x, y, carWidth, carHeight);
+  
+	  // Draw driver name
+	  ctx.fillStyle = "black";
+	  ctx.font = "14px Arial";
+	  ctx.fillText(position.driver_name, x + carWidth + 5, y + carHeight / 2);
+	});
+  }
+  
+  
