@@ -537,7 +537,7 @@ async function renderCanvas(trackId, positions) {
 	const track = (await getTracks()).find((t) => t.id === +trackId);
   
 	const canvas = document.getElementById("race-canvas");
-	const ctx = canvas.getContext("2d");
+	const ctx = canvas?.getContext("2d");
   
 	const trackWidth = canvas.width;
 	const trackHeight = canvas.height;
