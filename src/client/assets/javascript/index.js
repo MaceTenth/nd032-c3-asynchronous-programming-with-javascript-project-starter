@@ -100,7 +100,8 @@ async function handleCreateRace() {
   const { player_id, track_id } = store;
 
   if (!player_id || !track_id) {
-    displayErrorMessage("Please select a player and track.");
+	const missingInfo = checkMissingSelection(player_id,track_id)
+    displayErrorMessage(`Please select also a ${missingInfo}!`);
     return;
   }
 
@@ -513,3 +514,21 @@ function displayErrorMessage(message) {
 	  errorMessageContainer.classList.add("hidden");
 	}, 3000);
   }
+
+function checkMissingSelection(player_id,track_id){
+	let missingInfo;
+
+switch (true) {
+  case (!player_id && !track_id):
+    missingInfo = "player and a track";
+    break;
+  case (!player_id):
+    missingInfo = "track";
+    break;
+  case (!track_id):
+    missingInfo = "player";
+    break;
+}
+
+return missingInfo;
+}
