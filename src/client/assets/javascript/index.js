@@ -316,7 +316,7 @@ function renderRaceStartView(track, racers) {
 				${renderCountdown(3)}
 			</section>
 			<section id="race-view">
-			 <canvas id="race-canvas" width="800" height="400"></canvas>
+			 <canvas id="race-canvas" width="750" height="375"></canvas>
 		    </section>
 			<section id="accelerate">
 				<h2>Directions</h2>
