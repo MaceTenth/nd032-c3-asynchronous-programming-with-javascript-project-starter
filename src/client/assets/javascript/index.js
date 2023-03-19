@@ -36,34 +36,40 @@ function setupClickHandlers() {
     function (event) {
       const { target } = event;
 
-    //   // Race track form field
-    //   if (target.matches(".card.track")) {
-    //     handleSelectTrack(target);
-    //   } else if (target.parentElement.matches(".card.track")) {
-    //     handleSelectTrack(target.parentElement);
-    //   }
+      //   // Race track form field
+      //   if (target.matches(".card.track")) {
+      //     handleSelectTrack(target);
+      //   } else if (target.parentElement.matches(".card.track")) {
+      //     handleSelectTrack(target.parentElement);
+      //   }
 
-    //   // Podracer form field
-    //   if (target.matches(".card.podracer")) {
-    //     handleSelectPodRacer(target);
-    //   } else if (target.parentElement.matches(".card.podracer")) {
-    //     handleSelectPodRacer(target.parentElement);
-    //   }
+      //   // Podracer form field
+      //   if (target.matches(".card.podracer")) {
+      //     handleSelectPodRacer(target);
+      //   } else if (target.parentElement.matches(".card.podracer")) {
+      //     handleSelectPodRacer(target.parentElement);
+      //   }
 
-	function matchesOrParentMatches(target, selector) {
-		return target.matches(selector) || (target.parentElement && target.parentElement.matches(selector));
-	  }
-	  
-	  if (matchesOrParentMatches(target, ".card.track")) {
-		const selectedTrack = target.matches(".card.track") ? target : target.parentElement;
-		handleSelectTrack(selectedTrack);
-	  }
-	  
-	  if (matchesOrParentMatches(target, ".card.podracer")) {
-		const selectedPodRacer = target.matches(".card.podracer") ? target : target.parentElement;
-		handleSelectPodRacer(selectedPodRacer);
-	  }
-	  
+      function matchesOrParentMatches(target, selector) {
+        return (
+          target.matches(selector) ||
+          (target.parentElement && target.parentElement.matches(selector))
+        );
+      }
+
+      if (matchesOrParentMatches(target, ".card.track")) {
+        const selectedTrack = target.matches(".card.track")
+          ? target
+          : target.parentElement;
+        handleSelectTrack(selectedTrack);
+      }
+
+      if (matchesOrParentMatches(target, ".card.podracer")) {
+        const selectedPodRacer = target.matches(".card.podracer")
+          ? target
+          : target.parentElement;
+        handleSelectPodRacer(selectedPodRacer);
+      }
 
       // Submit create race form
       if (target.matches("#submit-create-race")) {
@@ -100,21 +106,20 @@ async function handleCreateRace() {
   const { player_id, track_id } = store;
 
   if (!player_id || !track_id) {
-	const missingInfo = checkMissingSelection(player_id,track_id)
+    const missingInfo = checkMissingSelection(player_id, track_id);
     displayErrorMessage(`Please select also a ${missingInfo}!`);
     return;
   }
 
-
   // const race = TODO - invoke the API call to create the race, then save the result
   const raceId = await createRace(player_id, track_id);
-  
+
   // TODO - update the store with the race id
   renderAt("#race", renderRaceStartView(raceId.Track));
 
   // For the API to work properly, the race id should be race id - 1
-  updateStore({ race_id: raceId.ID })
-//   Object.assign(store, { race_id: raceId.ID });
+  updateStore({ race_id: raceId.ID });
+  //   Object.assign(store, { race_id: raceId.ID });
   // The race has been created, now start the countdown
   // TODO - call the async function runCountdown
   await runCountdown();
@@ -127,22 +132,26 @@ async function handleCreateRace() {
 function runRace(raceID) {
   return new Promise((resolve) => {
     // TODO - use Javascript's built in setInterval method to get race info every 500ms
-    
+
     const raceInterval = setInterval(async function () {
       try {
         const fetchRaceInfo = await getRace(raceID - 1);
         const raceInfo = await fetchRaceInfo.json();
 
         if (raceInfo.status.includes("in-progress")) {
-         
           // clearInterval(getRaceId);
           renderAt("#leaderBoard", raceProgress(raceInfo.positions));
           resolve(raceInfo);
           // return raceInfo;
         } else {
-		  const racerResults = raceInfo.positions.find(racer => racer.id === store.player_id)
-		//   Object.assign(store,{race_status: raceInfo.status, final_position:racerResults.final_position})
-		  updateStore({race_status: raceInfo.status, final_position:racerResults.final_position})
+          const racerResults = raceInfo.positions.find(
+            (racer) => racer.id === store.player_id
+          );
+          //   Object.assign(store,{race_status: raceInfo.status, final_position:racerResults.final_position})
+          updateStore({
+            race_status: raceInfo.status,
+            final_position: racerResults.final_position,
+          });
           clearInterval(raceInterval); // to stop the interval from repeating
           renderAt("#race", resultsView(raceInfo.positions)); // to render the results view
           resolve(raceInfo); // resolve the promise
@@ -181,10 +190,9 @@ async function runCountdown() {
       // run this DOM manipulation to decrement the countdown for the user
 
       const countDownInterval = setInterval(function () {
-        
         document.getElementById("big-numbers").innerHTML = --timer;
         if (timer === 0) {
-			document.getElementById("big-numbers").innerHTML = "GO!"
+          document.getElementById("big-numbers").innerHTML = "GO!";
           clearInterval(countDownInterval);
           resolve();
         }
@@ -198,8 +206,6 @@ async function runCountdown() {
 }
 
 function handleSelectPodRacer(target) {
-  
-
   // remove class selected from all racer options
   const selected = document.querySelector("#racers .selected");
   if (selected) {
@@ -210,13 +216,11 @@ function handleSelectPodRacer(target) {
   target.classList.add("selected");
 
   // TODO - save the selected racer to the store
-//   Object.assign(store, { player_id: Number(target.id) });
-  updateStore({ player_id: Number(target.id) })
+  //   Object.assign(store, { player_id: Number(target.id) });
+  updateStore({ player_id: Number(target.id) });
 }
 
 function handleSelectTrack(target) {
-  
-
   // remove class selected from all track options
   const selected = document.querySelector("#tracks .selected");
   if (selected) {
@@ -227,12 +231,11 @@ function handleSelectTrack(target) {
   target.classList.add("selected");
 
   // TODO - save the selected track id to the store
-//   Object.assign(store, { track_id: target.id });
-  updateStore({ track_id: target.id })
+  //   Object.assign(store, { track_id: target.id });
+  updateStore({ track_id: target.id });
 }
 
 function handleAccelerate() {
-  
   // TODO - Invoke the API call to accelerate
   accelerate(store.race_id - 1);
 }
@@ -366,18 +369,18 @@ function raceProgress(positions) {
 	`;
 }
 
-function finishingMessage(status){
-	const suffix = {
-		1: 'st',
-		2: 'nd',
-		3: 'rd',
-		4: 'th',
-		5: 'th'
-	}
+function finishingMessage(status) {
+  const suffix = {
+    1: "st",
+    2: "nd",
+    3: "rd",
+    4: "th",
+    5: "th",
+  };
 
-	const finalSuffix = suffix[status];
-     
-	return `<h4>Congradulations! You finished ${status}${finalSuffix}!</h4>`
+  const finalSuffix = suffix[status];
+
+  return `<h4>Congradulations! You finished ${status}${finalSuffix}!</h4>`;
 }
 
 function renderAt(element, html) {
@@ -432,7 +435,6 @@ async function createRace(player_id, track_id) {
   player_id = parseInt(player_id);
   track_id = parseInt(track_id);
   const body = { player_id, track_id };
-  
 
   try {
     const res = await fetch(`${SERVER}/api/races`, {
@@ -465,20 +467,16 @@ async function startRace(id) {
         "Content-Type": "application/json",
       },
     };
-   
+
     return fetch(`${SERVER}/api/races/${racing}/start`, fetchOptions).catch(
       (err) => console.log("Problem with the request:", err)
     );
   } catch (error) {
     console.log(`startRace: ${error}`);
   }
-
-  
 }
 
 async function accelerate(id) {
-  
-
   try {
     const accelerateRaceId = id;
     const fetchOptions = {
@@ -488,47 +486,45 @@ async function accelerate(id) {
       },
     };
 
-
-    if(store.race_status !== "finished"){
-		return fetch(
-			`${SERVER}/api/races/${accelerateRaceId}/accelerate`,
-			fetchOptions
-		  ).catch((err) => console.log("Problem with the request:", err));
-	}
-    
+    if (store.race_status !== "finished") {
+      return fetch(
+        `${SERVER}/api/races/${accelerateRaceId}/accelerate`,
+        fetchOptions
+      ).catch((err) => console.log("Problem with the request:", err));
+    }
   } catch (error) {
     console.log(`startRace: ${error}`);
   }
 }
 
 function updateStore(updates) {
-	Object.assign(store, updates);
-  }
-
-function displayErrorMessage(message) {
-	const errorMessageContainer = document.getElementById("error-message");
-	errorMessageContainer.innerText = message;
-	errorMessageContainer.classList.remove("hidden");
-  
-	setTimeout(() => {
-	  errorMessageContainer.classList.add("hidden");
-	}, 3000);
-  }
-
-function checkMissingSelection(player_id,track_id){
-	let missingInfo;
-
-switch (true) {
-  case (!player_id && !track_id):
-    missingInfo = "player and a track";
-    break;
-  case (!player_id):
-    missingInfo = "track";
-    break;
-  case (!track_id):
-    missingInfo = "player";
-    break;
+  Object.assign(store, updates);
 }
 
-return missingInfo;
+function displayErrorMessage(message) {
+  const errorMessageContainer = document.getElementById("error-message");
+  errorMessageContainer.innerText = message;
+  errorMessageContainer.classList.remove("hidden");
+
+  setTimeout(() => {
+    errorMessageContainer.classList.add("hidden");
+  }, 3000);
+}
+
+function checkMissingSelection(player_id, track_id) {
+  let missingInfo;
+
+  switch (true) {
+    case !player_id && !track_id:
+      missingInfo = "player and a track";
+      break;
+    case !player_id:
+      missingInfo = "track";
+      break;
+    case !track_id:
+      missingInfo = "player";
+      break;
+  }
+
+  return missingInfo;
 }

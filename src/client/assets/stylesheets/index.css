@@ -100,10 +100,16 @@ footer {
 }
 
 #error-message {
-  color: red;
+  color: black;
+  width: 20%;
+  line-height: 40px;
+  background-color: rgb(238, 135, 135);
   font-weight: bold;
   margin-bottom: 10px;
   transition: all 0.5s ease-in-out;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgb(0 0 0 / 0.2);
 }
 
 /* -------------------  TABLET  --------------------- */
