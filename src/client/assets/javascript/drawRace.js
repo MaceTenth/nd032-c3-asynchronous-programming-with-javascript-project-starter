@@ -59,7 +59,6 @@ export async function renderCanvas(trackId, positions) {
     const y = (index * (carHeight + 10)) % trackHeight;
 
     const carImage = carImages[position.color];
-    console.log("carImage: ", position.color);
 
     ctx.drawImage(carImage, x, y, carWidth, carHeight);
 
