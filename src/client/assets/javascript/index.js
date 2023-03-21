@@ -1,4 +1,4 @@
-import {renderCanvas} from "./drawRace.js"
+import { renderCanvas } from "./drawRace.js";
 // PROVIDED CODE BELOW (LINES 1 - 80) DO NOT REMOVE
 
 // The store will hold all information needed globally
