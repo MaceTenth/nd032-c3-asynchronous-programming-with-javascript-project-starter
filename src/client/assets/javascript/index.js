@@ -533,41 +533,64 @@ function checkMissingSelection(player_id, track_id) {
   return missingInfo;
 }
 
+
 async function renderCanvas(trackId, positions) {
-	const track = (await getTracks()).find((t) => t.id === +trackId);
+  const track = (await getTracks()).find((t) => t.id === +trackId);
+
+  const canvas = document.getElementById("race-canvas");
+  const ctx = canvas?.getContext("2d");
+
+  const trackWidth = canvas.width;
+  const trackHeight = canvas.height;
+
+  ctx.clearRect(0, 0, trackWidth, trackHeight);
+
+  ctx.fillStyle = "#eee";
+  ctx.fillRect(0, 0, trackWidth, trackHeight);
+
+  const carWidth = 30;
+  const carHeight = 60;
+
+  const carColors = ["red", "blue", "green", "yellow", "pink"];
+
+  const carImages = {};
+  await Promise.all(
+    carColors.map(async (color) => {
+      const img = new Image();
+      img.src = `../assets/cars/${color}car.png`;
+      await new Promise((resolve) => {
+        img.onload = resolve;
+      });
+      carImages[color] = img;
+    })
+  );
+
+  positions.forEach((position) => {
+    if (store[position.driver_name] === undefined) {
+      const availableColors = carColors.filter((color) => {
+        return !Object.values(store).includes(color);
+      });
+      store[position.driver_name] = availableColors[Math.floor(Math.random() * availableColors.length)];
+    }
+    position.color = store[position.driver_name];
+  });
+
+  positions.forEach((position, index) => {
+    const segmentPercentage = position.segment / track.segments.length;
+    const x = segmentPercentage * trackWidth;
+    const y = (index * (carHeight + 10)) % trackHeight;
+
+    const carImage = carImages[position.color];
+    console.log("carImage: ", position.color);
+
+    ctx.drawImage(carImage, x, y, carWidth, carHeight);
+
+    ctx.fillStyle = "black";
+    ctx.font = "14px Arial";
+    ctx.fillText(position.driver_name, x + carWidth + 5, y + carHeight / 2);
+  });
+}
+
   
-	const canvas = document.getElementById("race-canvas");
-	const ctx = canvas?.getContext("2d");
-  
-	const trackWidth = canvas.width;
-	const trackHeight = canvas.height;
-  
-	// Clear the canvas
-	ctx.clearRect(0, 0, trackWidth, trackHeight);
-  
-	// Draw the track background
-	ctx.fillStyle = "#eee";
-	ctx.fillRect(0, 0, trackWidth, trackHeight);
-  
-	// Calculate car width and height based on canvas size
-	const carWidth = 30;
-	const carHeight = 60;
-  
-	// Draw each car
-	positions.forEach((position, index) => {
-	  const segmentPercentage = position.segment / track.segments.length;
-	  const x = segmentPercentage * trackWidth;
-	  const y = (index * (carHeight + 10)) % trackHeight;
-  
-	  // Draw car
-	  ctx.fillStyle = position.id === store.player_id ? "blue" : "red";
-	  ctx.fillRect(x, y, carWidth, carHeight);
-  
-	  // Draw driver name
-	  ctx.fillStyle = "black";
-	  ctx.font = "14px Arial";
-	  ctx.fillText(position.driver_name, x + carWidth + 5, y + carHeight / 2);
-	});
-  }
   
   
